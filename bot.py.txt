@@ -1,0 +1,44 @@
+import os
+MONTHLY_URL = os.getenv("MONTHLY_URL")
+
+SEMI_URL = os.getenv("SEMI_URL")
+
+YEAR_URL = os.getenv("YEAR_URL")
+from telegram import InlineKeyboardButton
+from telegram import InlineKeyboardMarkup
+keyboard = [
+
+[
+InlineKeyboardButton(
+"💎 اشتراك شهري - 49 ريال",
+url=MONTHLY_URL
+)
+],
+
+[
+InlineKeyboardButton(
+"⭐ اشتراك نصف سنوي - 264.60 ريال",
+url=SEMI_URL
+)
+],
+
+[
+InlineKeyboardButton(
+"🏆 اشتراك سنوي - 470.70 ريال",
+url=YEAR_URL
+)
+]
+
+]
+reply_markup = InlineKeyboardMarkup(
+keyboard
+)
+async def start(update, context):
+await update.message.reply_text(
+"""
+مرحباً بك في نادي التحديات القيمية
+
+اختر خطة الاشتراك المناسبة:
+""",
+reply_markup=reply_markup
+)
