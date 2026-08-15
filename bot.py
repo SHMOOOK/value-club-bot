@@ -1,23 +1,29 @@
 import os
 
-from telegram import InlineKeyboardButton
-from telegram import InlineKeyboardMarkup
-from telegram import Update
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup
+)
 
 from telegram.ext import (
     Application,
     CommandHandler,
+    CallbackQueryHandler,
     ContextTypes
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN غير موجود")
 
 MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
+
 SEMI_URL = "https://streampay.sa/s/mBtYQ"
+
 YEAR_URL = "https://streampay.sa/s/1PW2Q"
 
 
@@ -30,22 +36,15 @@ async def start(
 
         [
             InlineKeyboardButton(
-                "💎 اشتراك شهري - 49 ريال",
-                url=MONTHLY_URL
+                "📋 خطط الاشتراك",
+                callback_data="plans"
             )
         ],
 
         [
             InlineKeyboardButton(
-                "⭐ اشتراك نصف سنوي بخصم 10% - 264.60 ريال",
-                url=SEMI_URL
-            )
-        ],
-
-        [
-            InlineKeyboardButton(
-                "🏆 اشتراك سنوي بخصم 20% - 470.70 ريال",
-                url=YEAR_URL
+                "ℹ️ عن النادي",
+                callback_data="about"
             )
         ]
 
@@ -55,14 +54,75 @@ async def start(
 
     await update.message.reply_text(
         """
-مرحباً بك في نادي التحديات القيمية
+مرحباً بك في نادي التحديات القيمية 🌱
 
 رحلتك الممتعة نحو الغرس القيمي
 
-فضلاً اختر خطة الاشتراك المناسبة:
+اختر من القائمة التالية:
         """,
         reply_markup=reply_markup
     )
+
+
+async def button_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    if query.data == "plans":
+
+        keyboard = [
+
+            [
+                InlineKeyboardButton(
+                    "💎 اشتراك شهري - 49 ريال",
+                    url=MONTHLY_URL
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "⭐ اشتراك نصف سنوي بخصم 10% - 264.60 ريال",
+                    url=SEMI_URL
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "🏆 اشتراك سنوي بخصم 20% - 470.70 ريال",
+                    url=YEAR_URL
+                )
+            ]
+
+        ]
+
+        await query.message.reply_text(
+            """
+اختر خطة الاشتراك المناسبة:
+
+💎 شهري
+⭐ نصف سنوي
+🏆 سنوي
+            """,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    elif query.data == "about":
+
+        await query.message.reply_text(
+            """
+🌱 نادي التحديات القيمية
+
+برنامج اشتراكي يهدف إلى تعزيز القيم من خلال تحديات وأنشطة عملية مستمرة.
+
+للاشتراك اضغط على:
+📋 خطط الاشتراك
+"""
+        )
 
 
 async def invite(
@@ -79,9 +139,9 @@ async def invite(
 
         await update.message.reply_text(
             f"""
-✅ تم إنشاء رابط الدخول الخاص بكم للانضمام إلى النادي
+✅ تم إنشاء رابط الدخول
 
-الرابط صالح لمستخدم واحد فقط:
+🔗 الرابط:
 
 {invite_link.invite_link}
 """
@@ -109,6 +169,12 @@ app.add_handler(
     CommandHandler(
         "invite",
         invite
+    )
+)
+
+app.add_handler(
+    CallbackQueryHandler(
+        button_handler
     )
 )
 
