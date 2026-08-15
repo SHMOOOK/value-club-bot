@@ -28,6 +28,7 @@ async def start(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE
 ):
+
     keyboard = [
 
         [
@@ -66,7 +67,11 @@ async def start(
         reply_markup=reply_markup
     )
 
-async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def invite(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
 
     invite_link = await context.bot.create_chat_invite_link(
         chat_id=CHANNEL_ID,
@@ -76,7 +81,11 @@ async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"رابط الدعوة:\n{invite_link.invite_link}"
     )
-app = Application.builder().token(BOT_TOKEN).build()
+
+
+app = Application.builder().token(
+    BOT_TOKEN
+).build()
 
 app.add_handler(
     CommandHandler(
@@ -85,7 +94,11 @@ app.add_handler(
     )
 )
 
-async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("تم تنفيذ أمر invite")
-    
+app.add_handler(
+    CommandHandler(
+        "invite",
+        invite
+    )
+)
+
 app.run_polling()
