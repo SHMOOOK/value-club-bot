@@ -78,17 +78,25 @@ async def invite(
         )
 
         await update.message.reply_text(
-            f"رابط الدعوة:\n{invite_link.invite_link}"
+            f"""
+✅ تم إنشاء رابط الدخول
+
+الرابط صالح لمستخدم واحد فقط:
+
+{invite_link.invite_link}
+"""
         )
 
     except Exception as e:
 
         await update.message.reply_text(
-            f"خطأ:\n{e}"
+            f"حدث خطأ:\n{e}"
         )
 
 
-app = Application.builder().token(BOT_TOKEN).build()
+app = Application.builder().token(
+    BOT_TOKEN
+).build()
 
 app.add_handler(
     CommandHandler(
