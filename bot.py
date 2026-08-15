@@ -56,8 +56,8 @@ async def start(
     await update.message.reply_text(
         """
 مرحباً بك في نادي التحديات القيمية
-
-اختر خطة الاشتراك المناسبة:
+رحلتك الممتعة نحو الغرس القيمي 
+فضلا اختيار خطة الاشتراك المناسبة:
         """,
         reply_markup=reply_markup
     )
