@@ -85,10 +85,7 @@ app.add_handler(
     )
 )
 
-app.add_handler(
-    CommandHandler(
-        "invite",
-        invite
-    )
-)
+async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("تم تنفيذ أمر invite")
+    
 app.run_polling()
