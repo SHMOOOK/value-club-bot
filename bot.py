@@ -11,16 +11,13 @@ from telegram.ext import (
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 if not BOT_TOKEN:
-    raise ValueError("BOT_TOKEN غير موجود في Environment Variables")
+    raise ValueError("BOT_TOKEN غير موجود")
 
 MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
-
 SEMI_URL = "https://streampay.sa/s/mBtYQ"
-
 YEAR_URL = "https://streampay.sa/s/1PW2Q"
 
 
@@ -73,19 +70,25 @@ async def invite(
     context: ContextTypes.DEFAULT_TYPE
 ):
 
-    invite_link = await context.bot.create_chat_invite_link(
-        chat_id=CHANNEL_ID,
-        member_limit=1
-    )
+    try:
 
-    await update.message.reply_text(
-        f"رابط الدعوة:\n{invite_link.invite_link}"
-    )
+        invite_link = await context.bot.create_chat_invite_link(
+            chat_id=CHANNEL_ID,
+            member_limit=1
+        )
+
+        await update.message.reply_text(
+            f"رابط الدعوة:\n{invite_link.invite_link}"
+        )
+
+    except Exception as e:
+
+        await update.message.reply_text(
+            f"خطأ:\n{e}"
+        )
 
 
-app = Application.builder().token(
-    BOT_TOKEN
-).build()
+app = Application.builder().token(BOT_TOKEN).build()
 
 app.add_handler(
     CommandHandler(
