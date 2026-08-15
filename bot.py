@@ -12,6 +12,9 @@ from telegram.ext import (
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN غير موجود في Environment Variables")
+
 MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
 
 SEMI_URL = "https://streampay.sa/s/mBtYQ"
@@ -23,7 +26,6 @@ async def start(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE
 ):
-
     keyboard = [
 
         [
@@ -49,23 +51,21 @@ async def start(
 
     ]
 
-    reply_markup = InlineKeyboardMarkup(
-        keyboard
-    )
+    reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
         """
 مرحباً بك في نادي التحديات القيمية
-رحلتك الممتعة نحو الغرس القيمي 
-فضلا اختيار خطة الاشتراك المناسبة:
+
+رحلتك الممتعة نحو الغرس القيمي
+
+فضلاً اختر خطة الاشتراك المناسبة:
         """,
         reply_markup=reply_markup
     )
 
 
-app = Application.builder().token(
-    BOT_TOKEN
-).build()
+app = Application.builder().token(BOT_TOKEN).build()
 
 app.add_handler(
     CommandHandler(
