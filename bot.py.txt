@@ -1,44 +1,77 @@
 import os
-MONTHLY_URL = os.getenv("MONTHLY_URL")
 
-SEMI_URL = os.getenv("SEMI_URL")
-
-YEAR_URL = os.getenv("YEAR_URL")
 from telegram import InlineKeyboardButton
 from telegram import InlineKeyboardMarkup
-keyboard = [
+from telegram import Update
 
-[
-InlineKeyboardButton(
-"💎 اشتراك شهري - 49 ريال",
-url=MONTHLY_URL
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    ContextTypes
 )
-],
 
-[
-InlineKeyboardButton(
-"⭐ اشتراك نصف سنوي - 264.60 ريال",
-url=SEMI_URL
-)
-],
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-[
-InlineKeyboardButton(
-"🏆 اشتراك سنوي - 470.70 ريال",
-url=YEAR_URL
-)
-]
+MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
 
-]
-reply_markup = InlineKeyboardMarkup(
-keyboard
-)
-async def start(update, context):
-await update.message.reply_text(
-"""
+SEMI_URL = "https://streampay.sa/s/mBtYQ"
+
+YEAR_URL = "https://streampay.sa/s/1PW2Q"
+
+
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    keyboard = [
+
+        [
+            InlineKeyboardButton(
+                "💎 اشتراك شهري - 49 ريال",
+                url=MONTHLY_URL
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "⭐ اشتراك نصف سنوي - 264.60 ريال",
+                url=SEMI_URL
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "🏆 اشتراك سنوي - 470.70 ريال",
+                url=YEAR_URL
+            )
+        ]
+
+    ]
+
+    reply_markup = InlineKeyboardMarkup(
+        keyboard
+    )
+
+    await update.message.reply_text(
+        """
 مرحباً بك في نادي التحديات القيمية
 
 اختر خطة الاشتراك المناسبة:
-""",
-reply_markup=reply_markup
+        """,
+        reply_markup=reply_markup
+    )
+
+
+app = Application.builder().token(
+    BOT_TOKEN
+).build()
+
+app.add_handler(
+    CommandHandler(
+        "start",
+        start
+    )
 )
+
+app.run_polling()
