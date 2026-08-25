@@ -36,7 +36,7 @@ def webhook():
             response = requests.get(
                 payment_url,
                 headers={
-                    "Authorization": f"Bearer {API_KEY}"
+                    "x-api-key": API_KEY
                 }
             )
 
@@ -52,4 +52,9 @@ def webhook():
 
     except Exception as e:
 
-        print("="
+        print("=" * 50)
+        print("ERROR:")
+        print(str(e))
+        print("=" * 50)
+
+    return "OK", 
