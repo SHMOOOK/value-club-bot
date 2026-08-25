@@ -19,12 +19,17 @@ def webhook():
 
     data = request.json
 
+    print("=" * 50)
     print("Webhook Received:")
     print(data)
+    print("=" * 50)
 
     try:
 
         payment_url = data.get("entity_url")
+
+        print("Payment URL:")
+        print(payment_url)
 
         if payment_url:
 
@@ -35,16 +40,16 @@ def webhook():
                 }
             )
 
-            print("Payment Details:")
-            print(response.json())
+            print("=" * 50)
+            print("Payment Details Status:")
+            print(response.status_code)
+
+            print("=" * 50)
+            print("Payment Details JSON:")
+            print(response.text)
+
+            print("=" * 50)
 
     except Exception as e:
 
-        print("ERROR:")
-        print(str(e))
-
-    return "OK", 200
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+        print("="
