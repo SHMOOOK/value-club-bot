@@ -1,3 +1,4 @@
+from database import init_db
 import os
 import asyncio
 import requests
@@ -266,6 +267,8 @@ async def button_handler(
 
 def main():
 
+    init_db()
+    
     application = Application.builder().token(BOT_TOKEN).build()
 
     application.add_handler(
