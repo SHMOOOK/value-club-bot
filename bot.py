@@ -33,8 +33,9 @@ def create_payment_link(
 
     print("CREATE PAYMENT LINK CALLED")
 
-  response = requests.post(
-    "https://stream-app-service.streampay.sa/api/v2/payment_links",
+    response = requests.post(
+        "https://stream-app-service.streampay.sa/api/v2/payment_links",
+        headers={
             "x-api-key": STREAMPAY_API_KEY,
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -140,6 +141,12 @@ async def button_handler(
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    elif query.data == "about":
+
+        await query.message.reply_text(
+            "نادي التحديات القيمية 🌱"
+        )
+
     elif query.data == "monthly":
 
         print("MONTHLY PRESSED")
@@ -230,31 +237,32 @@ async def button_handler(
                 product_id=YEAR_PRODUCT_ID
             )
 
-       keyboard = [
-    [
-        InlineKeyboardButton(
-            "💳 الانتقال للدفع",
-            url=payment_url
-        )
-    ]
-]
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        "💳 الانتقال للدفع",
+                        url=payment_url
+                    )
+                ]
+            ]
 
-await query.message.reply_text(
-    f"""🏆 الاشتراك السنوي
+            await query.message.reply_text(
+                f"""🏆 الاشتراك السنوي
 
 تم إنشاء رابط دفع خاص بحسابك.
 
 رقم العضوية:
 {user_id}
 """,
-    reply_markup=InlineKeyboardMarkup(keyboard)
-)
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
 
-except Exception as e:
+        except Exception as e:
 
-    await query.message.reply_text(
-        f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
-    )
+            await query.message.reply_text(
+                f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
+            )
+
 
 def main():
 
