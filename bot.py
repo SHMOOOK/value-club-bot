@@ -50,19 +50,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [
                 InlineKeyboardButton(
-                    "💎شهري - 49 ريالا فقط",
+                    "💎 شهري - 49 ريالا فقط",
                     callback_data="monthly"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "⭐6 أشهر خصم 10%(264.60 بدل 294 ريال)",
+                    "⭐ نصف سنوي 10% (264.60 بدل 294 ريال)",
                     callback_data="semi"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "🏆سنوي خصم 20%(470.70 بدل 588 ريال)",
+                    "🏆 سنوي 20%(470.70 بدل 588 ريال)",
                     callback_data="year"
                 )
             ]
