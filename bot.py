@@ -1,7 +1,11 @@
 import os
 import asyncio
+import requests
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
+from telegram import InlineKeyboardButton
+from telegram import InlineKeyboardMarkup
+
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -12,12 +16,68 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
-MONTHLY_URL = "https://streampay.sa/s/StiE1"
-SEMI_URL = "https://streampay.sa/s/X1F09"
-YEAR_URL = "https://streampay.sa/s/ctOYQ"
+STREAMPAY_API_KEY = os.getenv("STREAMPAY_API_KEY")
+
+FORM_ID = "06e03f83-63b4-4c61-9f3a-6218985e824b"
+
+MONTHLY_PRODUCT_ID = "bc2efc35-de79-45f6-90c0-1e818afa416d"
+SEMI_PRODUCT_ID = "be42362d-af9d-415d-9543-876821cac8a2"
+YEAR_PRODUCT_ID = "871271af-546a-4ea8-b5b5-21e644535fa1"
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def create_payment_link(
+    telegram_id: int,
+    plan_name: str,
+    product_id: str
+):
+
+    response = requests.post(
+        "https://stream-app-service.streampay.sa/api/v2/payment_links",
+        headers={
+            "x-api-key": STREAMPAY_API_KEY,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        json={
+            "name": plan_name,
+            "currency": "SAR",
+            "max_number_of_payments": 1,
+            "contact_information_type": "PHONE",
+            "form_id": FORM_ID,
+            "custom_metadata": {
+                "telegram_id": str(telegram_id)
+            },
+            "items": [
+                {
+                    "product_id": product_id,
+                    "quantity": 1
+                }
+            ]
+        },
+        timeout=30
+    )
+
+    print("=" * 50)
+    print("STREAM STATUS:")
+    print(response.status_code)
+
+    print("=" * 50)
+    print("STREAM BODY:")
+    print(response.text)
+
+    print("=" * 50)
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    return data["url"]
+
+
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
 
     keyboard = [
         [
@@ -40,9 +100,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def button_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
 
     query = update.callback_query
+
     await query.answer()
 
     if query.data == "plans":
@@ -77,128 +141,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         user_id = query.from_user.id
 
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    "💳 الانتقال للدفع",
-                    url=MONTHLY_URL
-                )
-            ]
-        ]
+        try:
 
-        await query.message.reply_text(
-            f"""💎 الاشتراك الشهري
-
-رقم العضوية الخاص بك:
-
-{user_id}
-
-انسخ هذا الرقم وضعه في حقل:
-
-رقم العضوية في تيليجرام
-
-داخل نموذج الدفع.
-""",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-
-    elif query.data == "semi":
-
-        user_id = query.from_user.id
-
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    "💳 الانتقال للدفع",
-                    url=SEMI_URL
-                )
-            ]
-        ]
-
-        await query.message.reply_text(
-            f"""⭐ الاشتراك نصف السنوي
-
-رقم العضوية الخاص بك:
-
-{user_id}
-
-انسخ هذا الرقم وضعه في حقل:
-
-رقم العضوية في تيليجرام
-
-داخل نموذج الدفع.
-""",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-
-    elif query.data == "year":
-
-        user_id = query.from_user.id
-
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    "💳 الانتقال للدفع",
-                    url=YEAR_URL
-                )
-            ]
-        ]
-
-        await query.message.reply_text(
-            f"""🏆 الاشتراك السنوي
-
-رقم العضوية الخاص بك:
-
-{user_id}
-
-انسخ هذا الرقم وضعه في حقل:
-
-رقم العضوية في تيليجرام
-
-داخل نموذج الدفع.
-""",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-
-    elif query.data == "about":
-
-        await query.message.reply_text(
-            "نادي التحديات القيمية برنامج اشتراكي يهدف إلى تعزيز القيم من خلال أنشطة وتحديات مستمرة."
-        )
-
-
-async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    invite_link = await context.bot.create_chat_invite_link(
-        chat_id=CHANNEL_ID,
-        member_limit=1
-    )
-
-    await update.message.reply_text(
-        f"رابط الدعوة:\n{invite_link.invite_link}"
-    )
-
-
-app = Application.builder().token(BOT_TOKEN).build()
-
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("invite", invite))
-app.add_handler(CallbackQueryHandler(button_handler))
-
-
-async def main():
-
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-
-    try:
-        while True:
-            await asyncio.sleep(3600)
-    finally:
-        await app.stop()
-        await app.shutdown()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+            payment_url = create_payment_link(
+                telegram_id=
