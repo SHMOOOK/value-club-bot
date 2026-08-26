@@ -144,4 +144,88 @@ async def button_handler(
         try:
 
             payment_url = create_payment_link(
-                telegram_id=
+                telegram_id=user_id,
+                plan_name="الاشتراك الشهري في النادي",
+                product_id=MONTHLY_PRODUCT_ID
+            )
+
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        "💳 الانتقال للدفع",
+                        url=payment_url
+                    )
+                ]
+            ]
+
+            await query.message.reply_text(
+                f"""💎 الاشتراك الشهري
+
+تم إنشاء رابط دفع خاص بحسابك.
+
+رقم العضوية:
+{user_id}
+""",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+
+        except Exception as e:
+
+            await query.message.reply_text(
+                f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
+            )
+
+    elif query.data == "semi":
+
+        user_id = query.from_user.id
+
+        try:
+
+            payment_url = create_payment_link(
+                telegram_id=user_id,
+                plan_name="الاشتراك نصف السنوي في النادي",
+                product_id=SEMI_PRODUCT_ID
+            )
+
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        "💳 الانتقال للدفع",
+                        url=payment_url
+                    )
+                ]
+            ]
+
+            await query.message.reply_text(
+                f"""⭐ الاشتراك نصف السنوي
+
+تم إنشاء رابط دفع خاص بحسابك.
+
+رقم العضوية:
+{user_id}
+""",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+
+        except Exception as e:
+
+            await query.message.reply_text(
+                f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
+            )
+
+    elif query.data == "year":
+
+        user_id = query.from_user.id
+
+        try:
+
+            payment_url = create_payment_link(
+                telegram_id=user_id,
+                plan_name="الاشتراك السنوي في النادي",
+                product_id=YEAR_PRODUCT_ID
+            )
+
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        "💳 الانتقال للد
