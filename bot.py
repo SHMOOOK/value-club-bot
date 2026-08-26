@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+CHANNEL_ID = int(os.getenv("CHANNEL_ID", "0"))
 
 STREAMPAY_API_KEY = os.getenv("STREAMPAY_API_KEY")
 
@@ -33,9 +33,8 @@ def create_payment_link(
 
     print("CREATE PAYMENT LINK CALLED")
 
-    response = requests.post(
-        "https://stream-app-service.streampay.sa/api/v2/payment_links",
-        headers={
+  response = requests.post(
+    "https://stream-app-service.streampay.sa/api/v2/payment_links",
             "x-api-key": STREAMPAY_API_KEY,
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -231,8 +230,48 @@ async def button_handler(
                 product_id=YEAR_PRODUCT_ID
             )
 
-            keyboard = [
-                [
-                    InlineKeyboardButton(
-                        "💳 الانتقال للدفع",
-                        url=
+       keyboard = [
+    [
+        InlineKeyboardButton(
+            "💳 الانتقال للدفع",
+            url=payment_url
+        )
+    ]
+]
+
+await query.message.reply_text(
+    f"""🏆 الاشتراك السنوي
+
+تم إنشاء رابط دفع خاص بحسابك.
+
+رقم العضوية:
+{user_id}
+""",
+    reply_markup=InlineKeyboardMarkup(keyboard)
+)
+
+except Exception as e:
+
+    await query.message.reply_text(
+        f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
+    )
+
+def main():
+
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    application.add_handler(
+        CommandHandler("start", start)
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(button_handler)
+    )
+
+    print("BOT STARTED")
+
+    application.run_polling()
+
+
+if __name__ == "__main__":
+    main()
