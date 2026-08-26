@@ -12,9 +12,9 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
-MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
-SEMI_URL = "https://streampay.sa/s/mBtYQ"
-YEAR_URL = "https://streampay.sa/s/1PW2Q"
+MONTHLY_URL = "https://streampay.sa/s/StiE1"
+SEMI_URL = "https://streampay.sa/s/X1F09"
+YEAR_URL = "https://streampay.sa/s/ctOYQ"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
