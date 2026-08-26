@@ -1,5 +1,4 @@
 import os
-import asyncio
 import requests
 
 from telegram import Update
@@ -280,22 +279,16 @@ app.add_handler(CommandHandler("invite", invite))
 app.add_handler(CallbackQueryHandler(button_handler))
 
 
-async def main():
+app = Application.builder().token(BOT_TOKEN).build()
 
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-
-    try:
-
-        while True:
-            await asyncio.sleep(3600)
-
-    finally:
-
-        await app.stop()
-        await app.shutdown()
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("invite", invite))
+app.add_handler(CallbackQueryHandler(button_handler))
 
 
+if __name__ == "__main__":
+    app.run_polling(
+        drop_pending_updates=True
+    )
 if __name__ == "__main__":
     asyncio.run(main())
