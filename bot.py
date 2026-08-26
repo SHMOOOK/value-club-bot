@@ -228,4 +228,74 @@ async def button_handler(
             keyboard = [
                 [
                     InlineKeyboardButton(
-                        "💳 الانتقال للد
+                        "💳 الانتقال للدفع",
+                        url=payment_url
+                    )
+                ]
+            ]
+
+            await query.message.reply_text(
+                f"""🏆 الاشتراك السنوي
+
+تم إنشاء رابط دفع خاص بحسابك.
+
+رقم العضوية:
+{user_id}
+""",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+
+        except Exception as e:
+
+            await query.message.reply_text(
+                f"حدث خطأ أثناء إنشاء رابط الدفع:\n{e}"
+            )
+
+    elif query.data == "about":
+
+        await query.message.reply_text(
+            "نادي التحديات القيمية برنامج اشتراكي يهدف إلى تعزيز القيم من خلال أنشطة وتحديات مستمرة."
+        )
+
+
+async def invite(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    invite_link = await context.bot.create_chat_invite_link(
+        chat_id=CHANNEL_ID,
+        member_limit=1
+    )
+
+    await update.message.reply_text(
+        f"رابط الدعوة:\n{invite_link.invite_link}"
+    )
+
+
+app = Application.builder().token(BOT_TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("invite", invite))
+app.add_handler(CallbackQueryHandler(button_handler))
+
+
+async def main():
+
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
+
+    try:
+
+        while True:
+            await asyncio.sleep(3600)
+
+    finally:
+
+        await app.stop()
+        await app.shutdown()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
