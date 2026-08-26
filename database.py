@@ -1,16 +1,25 @@
 import sqlite3
 
-conn = sqlite3.connect("subscriptions.db")
+DB_NAME = "subscriptions.db"
 
-cursor = conn.cursor()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    telegram_id INTEGER,
-    plan TEXT,
-    status TEXT
-)
-""")
+def init_db():
 
-conn.commit()
-conn.close()
+    conn = sqlite3.connect(DB_NAME)
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram_id TEXT NOT NULL,
+        payment_id TEXT UNIQUE,
+        subscription_id TEXT,
+        plan_type TEXT,
+        start_date TEXT,
+        end_date TEXT,
+        status TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+    
