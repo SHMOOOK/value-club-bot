@@ -31,6 +31,8 @@ def create_payment_link(
     product_id: str
 ):
 
+    print("CREATE PAYMENT LINK CALLED")
+    
     response = requests.post(
         "https://stream-app-service.streampay.sa/api/v2/payment_links",
         headers={
@@ -109,6 +111,8 @@ async def button_handler(
 
     await query.answer()
 
+    print("BUTTON CLICKED:", query.data)
+
     if query.data == "plans":
 
         keyboard = [
@@ -138,6 +142,8 @@ async def button_handler(
         )
 
     elif query.data == "monthly":
+
+        print("MONTHLY PRESSED")
 
         user_id = query.from_user.id
 
