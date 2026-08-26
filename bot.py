@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 from telegram import (
     Update,
@@ -14,16 +15,13 @@ from telegram.ext import (
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN غير موجود")
 
 MONTHLY_URL = "https://streampay.sa/s/iuaYZ"
-
 SEMI_URL = "https://streampay.sa/s/mBtYQ"
-
 YEAR_URL = "https://streampay.sa/s/1PW2Q"
 
 
@@ -35,6 +33,59 @@ async def start(
     keyboard = [
 
         [
+            InlineKeyboardButton(
+                "📋 خطط الاشتراك",
+                callback_data="plans"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "ℹ️ عن النادي",
+                callback_data="about"
+            )
+        ]
+
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(
+        """
+مرحباً بك في نادي التحديات القيمية 🌱
+
+رحلتك الممتعة نحو الغرس القيمي
+
+اختر من القائمة التالية:
+        """,
+        reply_markup=reply_markup
+    )
+
+
+async def button_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    if query.data == "plans":
+
+        keyboard = [
+
+            [
+                InlineKeyboardButton(
+                    "💎 اشتراك شهري - 49 ريال",
+                    callback_data="monthly"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "⭐ اشتراك نصف سنوي بخصم 10% - 264.60 ريال",
+                 [
             InlineKeyboardButton(
                 "📋 خطط الاشتراك",
                 callback_data="plans"
