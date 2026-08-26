@@ -291,6 +291,8 @@ async def main():
 
     await app.start()
 
+    await app.bot.delete_webhook(drop_pending_updates=True)
+    
     await app.updater.start_polling(
         drop_pending_updates=True
     )
