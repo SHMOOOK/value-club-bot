@@ -125,13 +125,13 @@ async def button_handler(
             ],
             [
                 InlineKeyboardButton(
-                    "⭐ 6 أشهر 10% (264.60 بدل 294 ريال)",
+                    "⭐ 6 أشهر 294 ريالا فقط",
                     callback_data="semi"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "🏆 سنوي 20% (470.70 بدل 588 ريال)",
+                    "🏆 اشتراك سنوي 588 ريالاً فقط",
                     callback_data="year"
                 )
             ]
