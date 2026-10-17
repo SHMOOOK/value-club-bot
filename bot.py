@@ -35,7 +35,7 @@ def create_payment_link(
     print("CREATE PAYMENT LINK CALLED")
 
     response = requests.post(
-        "https://stream-app-service.streampay.sa/api/v2/payment_links",
+        "https://stream-app-service.streampay.sa/api/v2/payments/{payment_id}",
         headers={
             "x-api-key": STREAMPAY_API_KEY,
             "Content-Type": "application/json",
